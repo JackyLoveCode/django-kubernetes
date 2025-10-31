@@ -58,8 +58,8 @@ DATABASES = {
     # "postgres": {
     #     "ENGINE": f'django.db.backends.{os.getenv("DATABASE_ENGINE", "sqlite3")}',
     #     "NAME": os.getenv("DATABASE_NAME", "django_docker"),
-    #     "USER": os.getenv("DATABASE_USERNAME", "postgres"),
-    #     "PASSWORD": os.getenv("DATABASE_PASSWORD", "pgjacksonjane123"),
+    #     "USER": os.getenv("DATABASE_USERNAME", "mydbuser"),
+    #     "PASSWORD": os.getenv("DATABASE_PASSWORD", "mydbsecret"),
     #     "HOST": os.getenv("DATABASE_HOST", "127.0.0.1"),
     #     "PORT": os.getenv("DATABASE_PORT", 5433),
     # },
