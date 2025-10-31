@@ -1,0 +1,76 @@
+<!-- core/templates/blog/detail.html -->
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — Django Tailwind Blog{% endblock %}
+{% block content %}
+<article class="mx-auto max-w-3xl">
+  {% if post.cover %}
+  <img src="{{ post.cover.url }}" alt="{{ post.title }}" class="rounded-3xl border mb-6">
+  {% endif %}
+  <div class="flex items-center gap-2 text-sm text-slate-500 mb-3">
+    {% if post.category %}<a href="{{ post.category.get_absolute_url }}" class="px-2 py-0.5 rounded-full bg-brand-50 text-brand-700">{{ post.category.name }}</a>{% endif %}
+    <span>•</span>
+    <span>{{ post.created|date:"M d, Y" }}</span>
+  </div>
+  <h1 class="text-3xl font-extrabold tracking-tight mb-3">{{ post.title }}</h1>
+  {% if post.tags.all %}
+  <div class="flex flex-wrap gap-2 mb-6">
+    {% for t in post.tags.all %}
+      <a href="{% url 'blog:tag' t.slug %}" class="text-xs px-2 py-1 rounded-full bg-slate-100 hover:bg-slate-200">{{ t.name }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="prose max-w-none prose-slate">
+    {{ post.content|linebreaks }}
+  </div>
+</article>
+
+<section id="comments" class="mx-auto max-w-3xl mt-12">
+  <h2 class="text-xl font-bold mb-4">Comments</h2>
+  <div class="space-y-6">
+    {% for c in post.comments.all %}
+    {% if c.active %}
+    <div class="bg-white rounded-2xl border p-4">
+      <div class="text-sm text-slate-600 mb-1">{{ c.name }} • {{ c.created|date:"M d, Y H:i" }}</div>
+      <p class="text-slate-800">{{ c.body|linebreaks }}</p>
+    </div>
+    {% endif %}
+    {% empty %}
+      <p class="text-slate-500">Be the first to comment.</p>
+    {% endfor %}
+  </div>
+
+  <form method="post" class="mt-8 bg-white border rounded-2xl p-6">
+    {% csrf_token %}
+    <div class="grid sm:grid-cols-2 gap-4">
+      <input type="text" name="name" maxlength="80" placeholder="Your name"
+             class="w-full rounded-xl border px-3 py-2" required>
+      <input type="email" name="email" placeholder="you@example.com"
+             class="w-full rounded-xl border px-3 py-2" required>
+    </div>
+    <textarea name="body" rows="5" placeholder="Share your thoughts..."
+              class="mt-4 w-full rounded-xl border px-3 py-2" required></textarea>
+    <button class="mt-4 px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700">Post Comment</button>
+  </form>
+</section>
+
+{% if related %}
+<section class="mx-auto max-w-5xl mt-12">
+  <h3 class="text-lg font-semibold mb-4">Related posts</h3>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for p in related %}
+    <a href="{{ p.get_absolute_url }}" class="block bg-white rounded-2xl border hover:shadow-lg transition">
+      {% if p.cover %}
+        <img src="{{ p.cover.url }}" alt="{{ p.title }}" class="rounded-t-2xl aspect-[16/9] object-cover">
+      {% else %}
+        <div class="rounded-t-2xl aspect-[16/9] bg-slate-200"></div>
+      {% endif %}
+      <div class="p-4">
+        <div class="text-xs text-slate-500 mb-1">{{ p.created|date:"M d, Y" }}</div>
+        <h4 class="font-semibold line-clamp-2">{{ p.title }}</h4>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,50 @@
+<!-- core/templates/base.html (Tailwind via Play CDN) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Django Tailwind Blog{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ["Inter", "ui-sans-serif", "system-ui"] },
+          colors: { brand: { 50:"#eef2ff", 100:"#e0e7ff", 600:"#4f46e5", 700:"#4338ca" } }
+        }
+      }
+    }
+  </script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
+      <a href="{% url 'blog:home' %}" class="text-xl font-bold text-brand-700">Tailwind ✕ Django Blog</a>
+      <nav class="ml-auto flex items-center gap-4">
+        <a href="{% url 'blog:home' %}" class="hover:text-brand-600">Home</a>
+        <a href="/admin/" class="hover:text-brand-600">Admin</a>
+        <form action="{% url 'blog:search' %}" method="get" class="ml-4">
+          <input name="q" type="search" placeholder="Search posts..."
+                 class="rounded-xl border px-3 py-1.5 text-sm focus:outline-none focus:ring focus:ring-brand-100" />
+        </form>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-sm text-slate-600 flex flex-col sm:flex-row gap-3 justify-between">
+      <p>© {{ now|date:"Y" }} Tailwind ✕ Django Blog. Crafted with ❤️</p>
+      <p class="space-x-4">
+        <a href="#" class="hover:text-brand-600">Privacy</a>
+        <a href="#" class="hover:text-brand-600">Contact</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

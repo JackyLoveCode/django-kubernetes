@@ -1,0 +1,56 @@
+<!-- core/templates/blog/home.html -->
+{% extends "base.html" %}
+{% block title %}Home — Django Tailwind Blog{% endblock %}
+{% block content %}
+<section class="mb-10">
+  <div class="rounded-3xl bg-gradient-to-br from-brand-50 to-white p-8 border">
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
+      Fresh stories, brewed daily ☕
+    </h1>
+    <p class="text-slate-600">A beautiful Django + Tailwind blog with categories, tags, search, and comments.</p>
+  </div>
+</section>
+
+<section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for p in posts %}
+  <article class="group bg-white rounded-2xl border hover:shadow-xl transition overflow-hidden flex flex-col">
+    {% if p.cover %}
+      <img src="{{ p.cover.url }}" alt="{{ p.title }}" class="aspect-[16/9] object-cover">
+    {% else %}
+      <div class="aspect-[16/9] bg-slate-200"></div>
+    {% endif %}
+    <div class="p-5 flex-1 flex flex-col">
+      <div class="flex items-center gap-2 text-xs text-slate-500 mb-2">
+        {% if p.category %}<a href="{{ p.category.get_absolute_url }}" class="px-2 py-0.5 rounded-full bg-brand-50 text-brand-700">{{ p.category.name }}</a>{% endif %}
+        <span>•</span>
+        <span>{{ p.created|date:"M d, Y" }}</span>
+      </div>
+      <h2 class="text-lg font-semibold leading-snug group-hover:text-brand-700">
+        <a href="{{ p.get_absolute_url }}">{{ p.title }}</a>
+      </h2>
+      <p class="text-slate-600 mt-2 line-clamp-3">{{ p.excerpt|default:p.content|truncatewords:30 }}</p>
+      <div class="mt-auto pt-4 flex items-center justify-between">
+        <div class="text-xs text-slate-500">
+          By {{ p.author.get_full_name|default:p.author.username }}
+        </div>
+        <a href="{{ p.get_absolute_url }}" class="text-sm font-medium text-brand-700 hover:underline">Read →</a>
+      </div>
+    </div>
+  </article>
+  {% empty %}
+    <p>No posts yet.</p>
+  {% endfor %}
+</section>
+
+{% if is_paginated %}
+<nav class="mt-10 flex justify-center gap-2">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 rounded-xl border hover:bg-slate-100">Prev</a>
+  {% endif %}
+  <span class="px-4 py-2 rounded-xl border bg-white">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 rounded-xl border hover:bg-slate-100">Next</a>
+  {% endif %}
+</nav>
+{% endif %}
+{% endblock %}
